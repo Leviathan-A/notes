@@ -1,4 +1,4 @@
-## 1.1斜着遍历
+# 1.1斜着遍历
 
 ```cpp
 for(int l=1;l<=n;l++)
@@ -47,11 +47,11 @@ for (int l = 2; l <= n; l++) {
 }
 ```
 
-## 1.2dfs和bfs
+# 1.2dfs和bfs
 
-最短用bfs，求方案dfs
+### 最短用bfs，求方案dfs
 
-### dfs遍历框架
+### dfs遍历框架(回溯)
 
 ```java
 result = []
@@ -167,7 +167,7 @@ int minDepth(TreeNode root) {
 }
 ```
 
-## 1.3并查集（真假判断，有逻辑传递性）
+# 1.3并查集（真假判断，有逻辑传递性）
 
 ```c++
 class UnionFind {
@@ -194,7 +194,7 @@ public:
 };
 ```
 
-## 1.4LRU和LFU
+# 1.4LRU和LFU
 
 ### LRU
 
@@ -466,7 +466,7 @@ public:
 };
 ```
 
-## 1.5优先队列使用
+# 1.5优先队列使用
 
 寻找中位数
 
@@ -499,7 +499,7 @@ public:
 
 ```
 
-## 1.6单调栈（Next Great Number）（尽量放id）
+# 1.6单调栈（Next Great Number）（尽量放id）
 
 模板
 
@@ -525,7 +525,9 @@ public:
 };
 ```
 
-## 1.7滑动窗口
+# 1.7滑动窗口
+
+## 1.7.1处理数字
 
 ### 优先队列（对带id的pair用优先队列进行排序）
 
@@ -582,7 +584,50 @@ public:
 };
 ```
 
-## 1.8二分查找
+## 1.7.2双指针
+
+```c++
+/* 滑动窗口算法框架 */
+void slidingWindow(string s, string t) {
+    unordered_map<char, int> need, window;
+    for (char c : t) need[c]++;
+
+    int left = 0, right = 0;
+    int valid = 0; 
+    while (right < s.size()) {
+        // c 是将移入窗口的字符
+        char c = s[right];
+        // 右移窗口
+        right++;
+        // 进行窗口内数据的一系列更新
+        ...
+
+        /*** debug 输出的位置 ***/
+        printf("window: [%d, %d)\n", left, right);
+        /********************/
+
+        // 判断左侧窗口是否要收缩
+        while (window needs shrink) {
+            // d 是将移出窗口的字符
+            char d = s[left];
+            // 左移窗口
+            left++;
+            // 进行窗口内数据的一系列更新
+            ...
+        }
+    }
+}
+```
+
+1、当移动 `right` 扩大窗口，即加入字符时，应该更新哪些数据？
+
+2、什么条件下，窗口应该暂停扩大，开始移动 `left` 缩小窗口？
+
+3、当移动 `left` 缩小窗口，即移出字符时，应该更新哪些数据？
+
+4、我们要的结果应该在扩大窗口时还是缩小窗口时进行更新？
+
+# 1.8二分查找
 
 ### 找一个数（长度-1；小于等于；返回目标）
 
@@ -654,3 +699,40 @@ int right_bound(int[] nums, int target) {
 }
 ```
 
+这些问题都如出一辙，请大家特别留意题目中出现的关键字**「非负整数」、分割「连续」**，思考清楚设计算法的关键步骤和原因，相信以后遇到类似的问题就能轻松应对。
+
+「力扣」第 875 题：爱吃香蕉的珂珂（中等）
+LCP 12. 小张刷题计划 （中等）
+「力扣」第 1482 题：制作 m 束花所需的最少天数（中等）
+「力扣」第 1011 题：在 D 天内送达包裹的能力（中等）
+「力扣」第 1552 题：两球之间的磁力（中等）
+总结
+这道题让我们**「查找一个有范围的整数」**，以后遇到类似问题，要想到可以尝试使用「二分」；
+遇到类似使**「最大值」最小化**，这样的题目描述，可以好好跟自己做过的这些问题进行比较，看看能不能找到关联；
+在代码层面上，这些问题的特点都是：**在二分查找的判别函数里，需要遍历数组一次。**
+
+# 1.9双指针
+
+我把双指针技巧再分为两类，**一类是「快慢指针」，一类是「左右指针」**。前者解决主要解决**链表**中的问题，比如典型的判定链表中是否包含环；后者主要解决**数组（或者字符串）**中的问题，比如二分查找。
+
+[141.环形链表（简单）](https://leetcode-cn.com/problems/linked-list-cycle)
+
+[142.环形链表II（简单）](https://leetcode-cn.com/problems/linked-list-cycle-ii)
+
+[167.两数之和 II - 输入有序数组（中等）](https://leetcode-cn.com/problems/two-sum-ii-input-array-is-sorted)
+
+[344.反转字符串（简单）](https://leetcode-cn.com/problems/reverse-string/)
+
+[19.删除链表倒数第 N 个元素（中等）](https://leetcode-cn.com/problems/remove-nth-node-from-end-of-list)
+
+
+
+# 2.1小技巧
+
+### stl找最大max——element
+
+### stl求和accumulate(vec.begin() , vec.end() , 42);
+
+### 整数个数time += (p - 1) / K + 1;
+
+### 
