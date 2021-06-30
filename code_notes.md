@@ -818,12 +818,122 @@ for 状态1 in 状态1的所有取值：
 
 
 
-# 3.1小技巧
+# 3小技巧
 
 ### stl找最大max——element
 
 ### stl求和accumulate(vec.begin() , vec.end() , 42);
 
+### stl sort(vec.begin(),vec.end(),grerater<int>())
+
 ### 整数个数time += (p - 1) / K + 1;
+
+## 3.1输入输出
+
+```c++
+//2 3 10
+//5 3
+//9 7
+
+//使用stringstream
+	int n, m, k;
+	cin >> n >> m >> k;
+	if (cin.get() == '\n')
+	cin.unget();
+	string line;
+	vector<vector<int>> mat;
+	for(int i=0;i<n;i++)
+	{
+		getline(cin, line);
+		stringstream ss(line);
+		vector<int> tmp;
+		string token;
+		while (ss >> token)
+		{
+			tmp.push_back(stoi(token));
+		}
+		mat.push_back(tmp);
+
+	}
+//使用cin
+	int n, m, k;
+	cin >> n >> m >> k;
+	vector<vector<int>> mat;
+	for(int i=0;i<n;i++)
+	{
+		vector<int> tmp(m);
+		for(int i=0;i<m;i++)cin>>tmp[i]
+		mat.push_back(tmp);
+
+	}
+//scanf
+	int m;//行
+	int n;//每行的数字个数
+
+	vector<vector<int> > vec;
+	scanf_s("%d,%d", &m, &n, 1, 1);
+	//scanf("%d,%d", &n,&m);
+	for (int i = 0; i < m; ++i){
+		for (int j = 0; j < n; ++j)
+        {
+            vector<int> vectmp;
+			int tmp;
+			scanf_s("%d,", &tmp, 1);
+			//scanf("%d,", &tmp);
+			vectmp.push_back(tmp);
+		}
+		vec.push_back(vectmp);
+	}
+————————————————
+版权声明：本文为CSDN博主「qq_40602964」的原创文章，遵循CC 4.0 BY-SA版权协议，转载请附上原文出处链接及本声明。
+原文链接：https://blog.csdn.net/qq_40602964/article/details/95252976
+
+```
+
+```c++
+//1,2,3
+//getline
+	vector<string> ans;
+	string line,token;
+	cin >> line;
+	stringstream ss(line);
+	while (getline(ss, token, ','))
+	{
+		ans.push_back(token);
+	}	
+//scanf
+	int n;
+	vector<int> vec;
+	scanf_s("%d", &n, 1);//读入n,不需要逗号
+	//scanf("%d", &n);
+	for (int i = 0; i < n; ++i){
+		int tmp;
+		scanf_s("%d,", &tmp, 1);//分别读入n个数，'%d'后面加','
+		//scanf("%d,", &tmp);//分别读入n个数，'%d'后面加','
+		vec.push_back(tmp);
+	}
+————————————————
+版权声明：本文为CSDN博主「qq_40602964」的原创文章，遵循CC 4.0 BY-SA版权协议，转载请附上原文出处链接及本声明。
+原文链接：https://blog.csdn.net/qq_40602964/article/details/95252976
+```
+
+```c++
+//未告诉输入个数，以回车结束
+	vector<int> vec;
+	int tmp;
+	char ch = 'a';
+	 while(ch != '\n')
+	{
+		scanf_s("%d", &tmp, 1);//数字
+		//cout << "get_tmp:" << tmp << " ";
+		ch = getchar();	//空格或逗号
+		//cout << "get_ch:" << ch << endl;
+		vec.push_back(tmp);
+	} 
+
+————————————————
+版权声明：本文为CSDN博主「qq_40602964」的原创文章，遵循CC 4.0 BY-SA版权协议，转载请附上原文出处链接及本声明。
+原文链接：https://blog.csdn.net/qq_40602964/article/details/95252976
+```
 
 ### 
