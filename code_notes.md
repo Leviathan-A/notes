@@ -525,6 +525,46 @@ public:
 };
 ```
 
+字符串去重的变体，此处大小为字符串的字典顺序
+
+```c++
+class Solution {
+public:
+ string removeDuplicateLetters(string s) {
+	int dict[26] = { 0 };
+	int in[26] = { 0 };
+	for (char c : s)
+		dict[c - 'a']++;
+	stack<char> st;
+	// st.push('a');
+	string ans;
+	for(char c:s)
+    {
+        dict[c-'a']--;
+        if(in[c-'a'])continue;
+        while(!st.empty() && st.top() > c)
+        {
+            if(dict[st.top()-'a']==0)break;
+            in[st.top()-'a']--;
+            st.pop();
+        }
+        st.push(c);
+        in[c-'a']=1;
+
+    }
+	while (!st.empty())
+	{
+		ans.push_back(st.top());
+		st.pop();
+	}
+    reverse(ans.begin(),ans.end());
+	return ans;
+    }
+};
+```
+
+
+
 # 1.7滑动窗口
 
 ## 1.7.1处理数字
@@ -711,7 +751,7 @@ LCP 12. 小张刷题计划 （中等）
 遇到类似使**「最大值」最小化**，这样的题目描述，可以好好跟自己做过的这些问题进行比较，看看能不能找到关联；
 在代码层面上，这些问题的特点都是：**在二分查找的判别函数里，需要遍历数组一次。**
 
-# 1.9双指针
+# 1.9双指针（非滑动窗口）
 
 我把双指针技巧再分为两类，**一类是「快慢指针」，一类是「左右指针」**。前者解决主要解决**链表**中的问题，比如典型的判定链表中是否包含环；后者主要解决**数组（或者字符串）**中的问题，比如二分查找。
 
@@ -724,6 +764,27 @@ LCP 12. 小张刷题计划 （中等）
 [344.反转字符串（简单）](https://leetcode-cn.com/problems/reverse-string/)
 
 [19.删除链表倒数第 N 个元素（中等）](https://leetcode-cn.com/problems/remove-nth-node-from-end-of-list)
+
+### 快慢指针处理重复元素
+
+```java
+int removeDuplicates(int[] nums) {
+    if (nums.length == 0) {
+        return 0;
+    }
+    int slow = 0, fast = 0;
+    while (fast < nums.length) {
+        if (nums[fast] != nums[slow]) {
+            slow++;
+            // 维护 nums[0..slow] 无重复
+            nums[slow] = nums[fast];
+        }
+        fast++;
+    }
+    // 数组长度为索引 + 1
+    return slow + 1;
+}
+```
 
 
 
