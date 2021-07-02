@@ -822,6 +822,8 @@ for 状态1 in 状态1的所有取值：
 
 回溯框架（可见1.2）
 
+动态规划问题的一般形式就是**求最值**，求**最长**递增子序列呀，**最小**编辑距离呀等等。回溯是求**所有方案**
+
 ```python
 def backtrack(路径, 选择列表):
     if 满足结束条件:
@@ -844,6 +846,70 @@ def backtrack(nums, i):
         # 穷举 nums[i + 1] 的选择
         backtrack(nums, i + 1)
         撤销选择
+```
+
+## 2.2自顶向下dp和自底向上dp
+
+**DP table 是自底向上求解，递归解法是自顶向下求解**：
+
+编辑距离用递归**自顶向下+备忘录**
+
+```c++
+class Solution {
+public:
+    
+    int dp(string& word1, string& word2, int i, int j,vector<vector<int>>& memo)
+    {
+        if(i==-1)return j+1;
+        if(j==-1)return i+1;
+        if(memo[i][j]!=-1)return memo[i][j];
+        if(word1[i]==word2[j])
+        {
+            memo[i][j]=dp(word1,word2,i-1,j-1,memo);
+            return memo[i][j];
+        }
+        else
+        {
+        memo[i][j]=min(dp(word1,word2,i-1,j,memo)+1,min(dp(word1,word2,i-1,j-1,memo)+1,dp(word1,word2,i,j-1,memo)+1));
+        return memo[i][j];
+
+        }
+    }
+    int minDistance(string word1, string word2) {
+        vector<vector<int>> memo(word1.size(),vector<int>(word2.size(),-1));
+        return dp(word1,word2,word1.size()-1,word2.size()-1,memo);
+    }
+};
+```
+
+编辑距离用递归DP_TABLE自底向上
+
+```c++
+class Solution {
+public:
+    int minDistance(string word1, string word2) {
+        vector<vector<int>> dp(word1.size()+1,vector<int>(word2.size()+1,0));
+        for(int i=0;i<=word1.size();i++)
+        {
+            dp[i][0]=i;
+        }
+        for(int j=0;j<=word2.size();j++)
+        {
+            dp[0][j]=j;
+        }
+        for(int i=1;i<=word1.size();i++)
+        {
+            for(int j=1;j<=word2.size();j++)
+            {
+                if(word1[i-1]==word2[j-1])
+                dp[i][j]=dp[i-1][j-1];
+                else
+                dp[i][j]=min(dp[i-1][j]+1,min(dp[i-1][j-1]+1,dp[i][j-1]+1));
+            }
+        }
+        return dp[word1.size()][word2.size()];
+    }
+};
 ```
 
 
