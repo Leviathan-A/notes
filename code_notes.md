@@ -1,4 +1,6 @@
-# 1.1斜着遍历
+# 1.数据结构
+
+## 1.1斜着遍历
 
 ```cpp
 for(int l=1;l<=n;l++)
@@ -47,7 +49,13 @@ for (int l = 2; l <= n; l++) {
 }
 ```
 
-# 1.2dfs和bfs
+1、遍历的过程中，所需的状态必须是已经计算出来的**。
+
+**2、遍历的终点必须是存储结果的那个位置**。
+
+主要就是看 base case 和最终结果的存储位置，保证遍历过程中使用的数据都是计算完毕的就行
+
+## 1.2dfs和bfs
 
 ### 最短用bfs，求方案dfs
 
@@ -167,7 +175,7 @@ int minDepth(TreeNode root) {
 }
 ```
 
-# 1.3并查集（真假判断，有逻辑传递性）
+## 1.3并查集（真假判断，有逻辑传递性）
 
 ```c++
 class UnionFind {
@@ -194,7 +202,7 @@ public:
 };
 ```
 
-# 1.4LRU和LFU
+## 1.4LRU和LFU
 
 ### LRU
 
@@ -466,7 +474,7 @@ public:
 };
 ```
 
-# 1.5优先队列使用
+## 1.5优先队列使用
 
 寻找中位数
 
@@ -499,7 +507,7 @@ public:
 
 ```
 
-# 1.6单调栈（Next Great Number）（尽量放id）
+## 1.6单调栈（Next Great Number）（尽量放id）
 
 模板
 
@@ -565,11 +573,11 @@ public:
 
 
 
-# 1.7滑动窗口
+## 1.7滑动窗口
 
-## 1.7.1处理数字
+### 1.7.1处理数字
 
-### 优先队列（对带id的pair用优先队列进行排序）
+#### 优先队列（对带id的pair用优先队列进行排序）
 
 ```c++
 class Solution {
@@ -593,7 +601,7 @@ public:
 };
 ```
 
-### 单调队列（使用队列两头拍扁）
+#### 单调队列（使用队列两头拍扁）
 
 ```c++
 class Solution {
@@ -624,7 +632,7 @@ public:
 };
 ```
 
-## 1.7.2双指针
+### 1.7.2双指针
 
 ```c++
 /* 滑动窗口算法框架 */
@@ -667,9 +675,9 @@ void slidingWindow(string s, string t) {
 
 4、我们要的结果应该在扩大窗口时还是缩小窗口时进行更新？
 
-# 1.8二分查找
+## 1.8二分查找
 
-### 找一个数（长度-1；小于等于；返回目标）
+#### 找一个数（长度-1；小于等于；返回目标）
 
 ```java
 int binary_search(int[] nums, int target) {
@@ -690,7 +698,7 @@ int binary_search(int[] nums, int target) {
 }
 ```
 
-### 找左侧边界（长度-1；小于等于；返回左侧）
+#### 找左侧边界（长度-1；小于等于；返回左侧）
 
 ```java
 int left_bound(int[] nums, int target) {
@@ -716,7 +724,7 @@ int left_bound(int[] nums, int target) {
 }
 ```
 
-### 找右侧边界（长度-1；小于等于；返回右侧）
+#### 找右侧边界（长度-1；小于等于；返回右侧）
 
 ```java
 int right_bound(int[] nums, int target) {
@@ -751,7 +759,7 @@ LCP 12. 小张刷题计划 （中等）
 遇到类似使**「最大值」最小化**，这样的题目描述，可以好好跟自己做过的这些问题进行比较，看看能不能找到关联；
 在代码层面上，这些问题的特点都是：**在二分查找的判别函数里，需要遍历数组一次。**
 
-# 1.9双指针（非滑动窗口）
+## 1.9双指针（非滑动窗口）
 
 我把双指针技巧再分为两类，**一类是「快慢指针」，一类是「左右指针」**。前者解决主要解决**链表**中的问题，比如典型的判定链表中是否包含环；后者主要解决**数组（或者字符串）**中的问题，比如二分查找。
 
@@ -765,7 +773,7 @@ LCP 12. 小张刷题计划 （中等）
 
 [19.删除链表倒数第 N 个元素（中等）](https://leetcode-cn.com/problems/remove-nth-node-from-end-of-list)
 
-### 快慢指针处理重复元素
+#### 快慢指针处理重复元素
 
 ```java
 int removeDuplicates(int[] nums) {
@@ -788,12 +796,274 @@ int removeDuplicates(int[] nums) {
 
 
 
-# 2.1小技巧
+# 2.动态规划
+
+动态规划问题的一般形式就是**求最值**，求**最长**递增子序列呀，**最小**编辑距离呀等等。
+
+求解动态规划的核心问题是**穷举**
+
+**存在「重叠子问题」**，如果暴力穷举的话效率会极其低下，所以需要**「备忘录」或者「DP table」**来优化穷举过程，避免不必要的计算。
+
+而且，动态规划问题一定会**具备「最优子结构」**，才能通过子问题的最值得到原问题的最值
+
+**明确 base case -> 明确「状态」-> 明确「选择」 -> 定义 dp 数组/函数的含义**
+
+```java
+# 初始化 base case
+dp[0][0][...] = base
+# 进行状态转移
+for 状态1 in 状态1的所有取值：
+    for 状态2 in 状态2的所有取值：
+        for ...
+            dp[状态1][状态2][...] = 求最值(选择1，选择2...)
+```
+
+## 2.1动态规划与回溯对比
+
+回溯框架（可见1.2）
+
+动态规划问题的一般形式就是**求最值**，求**最长**递增子序列呀，**最小**编辑距离呀等等。回溯是求**所有方案**
+
+```python
+def backtrack(路径, 选择列表):
+    if 满足结束条件:
+        result.add(路径)
+        return
+
+    for 选择 in 选择列表:
+        做选择
+        backtrack(路径, 选择列表)
+        撤销选择
+        
+def backtrack(nums, i):
+    if i == len(nums):
+        if 达到 target:
+            result += 1
+        return
+
+    for op in { +1, -1 }:
+        选择 op * nums[i]
+        # 穷举 nums[i + 1] 的选择
+        backtrack(nums, i + 1)
+        撤销选择
+```
+
+## 2.2自顶向下dp和自底向上dp
+
+**DP table 是自底向上求解，递归解法是自顶向下求解**：
+
+编辑距离用递归**自顶向下+备忘录**
+
+```c++
+class Solution {
+public:
+    
+    int dp(string& word1, string& word2, int i, int j,vector<vector<int>>& memo)
+    {
+        if(i==-1)return j+1;
+        if(j==-1)return i+1;
+        if(memo[i][j]!=-1)return memo[i][j];
+        if(word1[i]==word2[j])
+        {
+            memo[i][j]=dp(word1,word2,i-1,j-1,memo);
+            return memo[i][j];
+        }
+        else
+        {
+        memo[i][j]=min(dp(word1,word2,i-1,j,memo)+1,min(dp(word1,word2,i-1,j-1,memo)+1,dp(word1,word2,i,j-1,memo)+1));
+        return memo[i][j];
+
+        }
+    }
+    int minDistance(string word1, string word2) {
+        vector<vector<int>> memo(word1.size(),vector<int>(word2.size(),-1));
+        return dp(word1,word2,word1.size()-1,word2.size()-1,memo);
+    }
+};
+```
+
+编辑距离用递归DP_TABLE自底向上
+
+```c++
+class Solution {
+public:
+    int minDistance(string word1, string word2) {
+        vector<vector<int>> dp(word1.size()+1,vector<int>(word2.size()+1,0));
+        for(int i=0;i<=word1.size();i++)
+        {
+            dp[i][0]=i;
+        }
+        for(int j=0;j<=word2.size();j++)
+        {
+            dp[0][j]=j;
+        }
+        for(int i=1;i<=word1.size();i++)
+        {
+            for(int j=1;j<=word2.size();j++)
+            {
+                if(word1[i-1]==word2[j-1])
+                dp[i][j]=dp[i-1][j-1];
+                else
+                dp[i][j]=min(dp[i-1][j]+1,min(dp[i-1][j-1]+1,dp[i][j-1]+1));
+            }
+        }
+        return dp[word1.size()][word2.size()];
+    }
+};
+```
+
+## 2.3最大上升序列
+
+套娃信封
+
+```c++
+class Solution {
+public:
+    static bool cmp(vector<int>v1,vector<int>v2)
+    {
+        if(v1[0]<v2[0])return true;
+        else if(v1[0]==v2[0])
+        return v1[1]>v2[1]?true:false;
+        else return false;
+    }
+    int maxEnvelopes(vector<vector<int>>& envelopes) {
+        sort(envelopes.begin(),envelopes.end(),cmp);
+        vector<int> dp(envelopes.size(),1);
+        for(int i=1;i<envelopes.size();i++)
+        {
+            for(int j=0;j<i;j++)
+            {
+                if(envelopes[i][1]>envelopes[j][1])
+                dp[i]=max(dp[j]+1,dp[i]);
+            }
+        }
+        return *max_element(dp.begin(),dp.end());
+    }
+};
+```
+
+
+
+
+
+# 3小技巧
+
+### 二维偏序问题先升序后降序
 
 ### stl找最大max——element
 
 ### stl求和accumulate(vec.begin() , vec.end() , 42);
 
+### stl sort(vec.begin(),vec.end(),grerater<int>())
+
 ### 整数个数time += (p - 1) / K + 1;
+
+## 3.1输入输出
+
+```c++
+//2 3 10
+//5 3
+//9 7
+
+//使用stringstream
+	int n, m, k;
+	cin >> n >> m >> k;
+	if (cin.get() == '\n')
+	cin.unget();
+	string line;
+	vector<vector<int>> mat;
+	for(int i=0;i<n;i++)
+	{
+		getline(cin, line);
+		stringstream ss(line);
+		vector<int> tmp;
+		string token;
+		while (ss >> token)
+		{
+			tmp.push_back(stoi(token));
+		}
+		mat.push_back(tmp);
+
+	}
+//使用cin
+	int n, m, k;
+	cin >> n >> m >> k;
+	vector<vector<int>> mat;
+	for(int i=0;i<n;i++)
+	{
+		vector<int> tmp(m);
+		for(int i=0;i<m;i++)cin>>tmp[i]
+		mat.push_back(tmp);
+
+	}
+//scanf
+	int m;//行
+	int n;//每行的数字个数
+
+	vector<vector<int> > vec;
+	scanf_s("%d,%d", &m, &n, 1, 1);
+	//scanf("%d,%d", &n,&m);
+	for (int i = 0; i < m; ++i){
+		for (int j = 0; j < n; ++j)
+        {
+            vector<int> vectmp;
+			int tmp;
+			scanf_s("%d,", &tmp, 1);
+			//scanf("%d,", &tmp);
+			vectmp.push_back(tmp);
+		}
+		vec.push_back(vectmp);
+	}
+————————————————
+版权声明：本文为CSDN博主「qq_40602964」的原创文章，遵循CC 4.0 BY-SA版权协议，转载请附上原文出处链接及本声明。
+原文链接：https://blog.csdn.net/qq_40602964/article/details/95252976
+
+```
+
+```c++
+//1,2,3
+//getline
+	vector<string> ans;
+	string line,token;
+	cin >> line;
+	stringstream ss(line);
+	while (getline(ss, token, ','))
+	{
+		ans.push_back(token);
+	}	
+//scanf
+	int n;
+	vector<int> vec;
+	scanf_s("%d", &n, 1);//读入n,不需要逗号
+	//scanf("%d", &n);
+	for (int i = 0; i < n; ++i){
+		int tmp;
+		scanf_s("%d,", &tmp, 1);//分别读入n个数，'%d'后面加','
+		//scanf("%d,", &tmp);//分别读入n个数，'%d'后面加','
+		vec.push_back(tmp);
+	}
+————————————————
+版权声明：本文为CSDN博主「qq_40602964」的原创文章，遵循CC 4.0 BY-SA版权协议，转载请附上原文出处链接及本声明。
+原文链接：https://blog.csdn.net/qq_40602964/article/details/95252976
+```
+
+```c++
+//未告诉输入个数，以回车结束
+	vector<int> vec;
+	int tmp;
+	char ch = 'a';
+	 while(ch != '\n')
+	{
+		scanf_s("%d", &tmp, 1);//数字
+		//cout << "get_tmp:" << tmp << " ";
+		ch = getchar();	//空格或逗号
+		//cout << "get_ch:" << ch << endl;
+		vec.push_back(tmp);
+	} 
+
+————————————————
+版权声明：本文为CSDN博主「qq_40602964」的原创文章，遵循CC 4.0 BY-SA版权协议，转载请附上原文出处链接及本声明。
+原文链接：https://blog.csdn.net/qq_40602964/article/details/95252976
+```
 
 ### 
