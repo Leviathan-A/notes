@@ -993,6 +993,31 @@ for (int i = 0; i < n; i++) {
 
 另外，找到状态转移和 base case 之后，**一定要观察 DP table**，看看怎么遍历才能保证通过已计算出来的结果解决新的问题
 
+## 2.5背包问题
+
+```java
+int[][] dp[N+1][W+1]
+dp[0][..] = 0
+dp[..][0] = 0
+
+for i in [1..N]:
+    for w in [1..W]:
+        dp[i][w] = max(
+            把物品 i 装进背包,
+            不把物品 i 装进背包
+        )
+return dp[N][W]
+            
+for (int i = 1; i <= n; i++) {
+    for (int j = 1; j <= amount; j++) {
+        if (j - coins[i-1] >= 0)
+            dp[i][j] = dp[i - 1][j] 
+                     + dp[i][j-coins[i-1]];
+return dp[N][W]
+```
+
+
+
 # 3小技巧
 
 ### 二维偏序问题先升序后降序
