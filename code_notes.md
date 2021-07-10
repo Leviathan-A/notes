@@ -1007,13 +1007,81 @@ for i in [1..N]:
             不把物品 i 装进背包
         )
 return dp[N][W]
-            
+零钱问题2.0            
 for (int i = 1; i <= n; i++) {
     for (int j = 1; j <= amount; j++) {
         if (j - coins[i-1] >= 0)
             dp[i][j] = dp[i - 1][j] 
                      + dp[i][j-coins[i-1]];
 return dp[N][W]
+```
+
+背包问题，i永远是物品价值，j永远是背包容量。塞得下时永远要考虑塞不下时的情况。
+
+# 3.一些贪心问题
+
+## 3.1调度区间
+
+![](./图片/区间重叠问题.jpg)
+
+```java
+public int intervalSchedule(int[][] intvs) {
+    if (intvs.length == 0) return 0;
+    // 按 end 升序排序
+    Arrays.sort(intvs, new Comparator<int[]>() {
+        public int compare(int[] a, int[] b) {
+            return a[1] - b[1];
+        }
+    });
+    // 至少有一个区间不相交
+    int count = 1;
+    // 排序后，第一个区间就是 x
+    int x_end = intvs[0][1];
+    for (int[] interval : intvs) {
+        int start = interval[0];
+        if (start >= x_end) {
+            // 找到下一个选择的区间了
+            count++;
+            x_end = interval[1];
+        }
+    }
+    return count;
+}
+```
+
+## 3.2最简覆盖一个区间的办法
+
+```c++
+leetcode剪视频
+class Solution {
+public:
+static bool cmp(vector<int>& a, vector<int>& b)
+{
+    if(a[0]<b[0])return true;
+    else if(a[0]==b[0])return a[1]>b[1]?true:false;
+    else return false;
+}
+    int videoStitching(vector<vector<int>>& clips, int time) {
+        sort(clips.begin(),clips.end(),cmp);
+        int ans=0;
+        int n=clips.size();
+        int i=0;
+        int curend,nextend;
+        curend=nextend=0;
+        while(i<n && clips[i][0]<=curend)
+        {
+            while(i<n && clips[i][0]<=curend)
+            {
+                nextend=max(clips[i][1],nextend);i++;
+            }
+            ans++;
+            curend=nextend;
+            if(curend>=time)return ans;
+        }
+        return -1;
+        
+    }
+};
 ```
 
 
