@@ -850,7 +850,7 @@ def backtrack(nums, i):
         撤销选择
 ```
 
-## 2.2自顶向下dp和自底向上dp
+# 2.2自顶向下dp和自底向上dp
 
 **DP table 是自底向上求解，递归解法是自顶向下求解**：
 
@@ -913,6 +913,10 @@ public:
     }
 };
 ```
+
+**搞不清楚dp_table或者dp_table不好递推的时候用递归+备忘录。**
+
+**dp_table定义容易且递推容易时用数组遍历**。
 
 ## 2.3最大上升序列
 
@@ -1017,6 +1021,33 @@ return dp[N][W]
 ```
 
 背包问题，i永远是物品价值，j永远是背包容量。塞得下时永远要考虑塞不下时的情况。
+
+## 2.6 4键键盘，**另外一种状态转移不好找的时候考虑再设置一个变量进行遍历。**
+
+[651.四键键盘（中等）](https://leetcode-cn.com/problems/4-keys-keyboard)
+
+```c++
+class Solution {
+public:
+    int maxA(int n) {
+        if(n<=6)return n;
+
+        vector<int> dp(n,0);
+        for(int i=0;i<6;i++)dp[i]=i+1;
+        for(int i=6;i<n;i++)
+        {
+            dp[i]=dp[i-1]+1;
+            for(int j=3;j<i;j++)
+            {
+                dp[i]=max(dp[i],dp[j-2]*(i-j+1));
+            }
+        }
+        return dp[n-1];
+    }
+};
+```
+
+**另外一种状态转移不好找的时候考虑再设置一个变量进行遍历。**
 
 # 3.一些贪心问题
 
