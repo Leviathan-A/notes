@@ -1049,6 +1049,26 @@ public:
 
 **另外一种状态转移不好找的时候考虑再设置一个变量进行遍历。**
 
+## 2.7股票问题（状态机）
+
+```c++
+dp[i][k][0] = max(dp[i-1][k][0], dp[i-1][k][1] + prices[i])
+              max(   选择 rest  ,             选择 sell      )
+
+解释：今天我没有持有股票，有两种可能：
+要么是我昨天就没有持有，然后今天选择 rest，所以我今天还是没有持有；
+要么是我昨天持有股票，但是今天我 sell 了，所以我今天没有持有股票了。
+
+dp[i][k][1] = max(dp[i-1][k][1], dp[i-1][k-1][0] - prices[i])
+              max(   选择 rest  ,           选择 buy         )
+
+解释：今天我持有着股票，有两种可能：
+要么我昨天就持有着股票，然后今天选择 rest，所以我今天还持有着股票；
+要么我昨天本没有持有，但今天我选择 buy，所以今天我就持有股票了。
+```
+
+
+
 # 3.一些贪心问题
 
 ## 3.1调度区间
@@ -1128,6 +1148,10 @@ static bool cmp(vector<int>& a, vector<int>& b)
 ### stl sort(vec.begin(),vec.end(),grerater<int>())
 
 ### 整数个数time += (p - 1) / K + 1;
+
+### 三维vector初始化
+
+vector<vector<vector<int> > > vecInt(m, vector<vector<int> >(n, vector<int>(l)));
 
 ## 3.1输入输出
 
