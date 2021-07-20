@@ -1092,7 +1092,11 @@ public:
 };
 ```
 
+小诀窍：
 
+![](图片\状态机.png)
+
+**画出状态图，几个箭头输入就代表变化时要比较几次。**
 
 # 3.一些贪心问题
 
@@ -1280,6 +1284,15 @@ vector<vector<vector<int> > > vecInt(m, vector<vector<int> >(n, vector<int>(l)))
 		//cout << "get_ch:" << ch << endl;
 		vec.push_back(tmp);
 	} 
+
+	vector<int> ans;
+	string line, token;
+	getline(cin, line);
+	stringstream ss(line);
+	while (getline(ss, token,' '))
+	{
+		ans.push_back(stoi(token));
+	}
 
 ————————————————
 版权声明：本文为CSDN博主「qq_40602964」的原创文章，遵循CC 4.0 BY-SA版权协议，转载请附上原文出处链接及本声明。
