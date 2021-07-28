@@ -55,6 +55,54 @@ for (int l = 2; l <= n; l++) {
 
 主要就是看 base case 和最终结果的存储位置，保证遍历过程中使用的数据都是计算完毕的就行
 
+**递归遍历数组**
+
+[698.划分为k个相等的子集（中等）](https://leetcode-cn.com/problems/partition-to-k-equal-sum-subsets/)
+
+```c++
+for (int i = start; i < nums.length; i++) {
+        // 剪枝
+        if (used[i]) {
+            // nums[i] 已经被装入别的桶中
+            continue;
+        }
+        if (nums[i] + bucket > target) {
+            // 当前桶装不下 nums[i]
+            continue;
+        }
+        // 做选择，将 nums[i] 装入当前桶中
+        used[i] = true;
+        bucket += nums[i];
+        // 递归穷举下一个数字是否装入当前桶
+        if (backtrack(k, bucket, nums, i + 1, used, target)) {
+            return true;
+        }
+        // 撤销选择
+        used[i] = false;
+        bucket -= nums[i];
+    }
+```
+
+**递归遍历矩阵的某一个区域**
+
+[37.解数独（困难）](https://leetcode-cn.com/problems/sudoku-solver)
+
+```c++
+    bool valid(vector<vector<char>>& board,int row,int col,char ch)
+    {
+        for (int i = 0; i < 9; i++) {
+        // 判断行是否存在重复
+        if (board[row][i] == ch) return false;
+        // 判断列是否存在重复
+        if (board[i][col] == ch) return false;
+        // 判断 3 x 3 方框是否存在重复
+        if (board[(row/3)*3 + i/3][(col/3)*3 + i%3] == ch)
+            return false;
+    }
+```
+
+
+
 ## 1.2dfs和bfs
 
 ### 最短用bfs，求方案dfs
@@ -110,6 +158,20 @@ void backtrack(int[] nums, LinkedList<Integer> track) {
     }
 }
 ```
+
+[698.划分为k个相等的子集（中等）](https://leetcode-cn.com/problems/partition-to-k-equal-sum-subsets/)
+
+### 回溯视角问题
+
+先说第一个解法，也就是从数字的角度进行穷举，`n` 个数字，每个数字有 `k` 个桶可供选择，所以组合出的结果个数为 `k^n`，时间复杂度也就是 `O(k^n)`。
+
+第二个解法，每个桶要遍历 `n` 个数字，选择「装入」或「不装入」，组合的结果有 `2^n` 种；而我们有 `k` 个桶，所以总的时间复杂度为 `O(k*2^n)`。
+
+**当然，这是理论上的最坏复杂度，实际的复杂度肯定要好一些，毕竟我们添加了这么多剪枝逻辑**。不过，从复杂度的上界已经可以看出第一种思路要慢很多了。
+
+所以，谁说回溯算法没有技巧性的？虽然回溯算法就是暴力穷举，但穷举也分聪明的穷举方式和低效的穷举方式，关键看你以谁的「视角」进行穷举。
+
+通俗来说，我们应该尽量「少量多次」，就是说宁可多做几次选择，也不要给太大的选择空间；宁可「二选一」选 `k` 次，也不要 「`k` 选一」选一次。
 
 ### bfs框架
 
