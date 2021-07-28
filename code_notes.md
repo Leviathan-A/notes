@@ -55,6 +55,8 @@ for (int l = 2; l <= n; l++) {
 
 主要就是看 base case 和最终结果的存储位置，保证遍历过程中使用的数据都是计算完毕的就行
 
+
+
 **递归遍历数组**
 
 [698.划分为k个相等的子集（中等）](https://leetcode-cn.com/problems/partition-to-k-equal-sum-subsets/)
@@ -99,6 +101,15 @@ for (int i = start; i < nums.length; i++) {
         if (board[(row/3)*3 + i/3][(col/3)*3 + i%3] == ch)
             return false;
     }
+```
+
+**单次斜着遍历**
+
+```c++
+for (int i = row - 1, j = col - 1;
+            i >= 0 && j >= 0; i--, j--) {
+        if (board[i][j] == 'Q')
+            return false;
 ```
 
 
