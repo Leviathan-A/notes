@@ -184,7 +184,7 @@ void backtrack(int[] nums, LinkedList<Integer> track) {
 
 通俗来说，我们应该尽量「少量多次」，就是说宁可多做几次选择，也不要给太大的选择空间；宁可「二选一」选 `k` 次，也不要 「`k` 选一」选一次。
 
-### bfs框架
+## 1.2.5bfs框架
 
 ```java
 // 计算从起点 start 到终点 target 的最近距离
@@ -219,34 +219,168 @@ int BFS(Node start, Node target) {
 
 示范：树的深度
 
-```java
-int minDepth(TreeNode root) {
-    if (root == null) return 0;
-    Queue<TreeNode> q = new LinkedList<>();
-    q.offer(root);
-    // root 本身就是一层，depth 初始化为 1
-    int depth = 1;
-
-    while (!q.isEmpty()) {
-        int sz = q.size();
-        /* 将当前队列中的所有节点向四周扩散 */
-        for (int i = 0; i < sz; i++) {
-            TreeNode cur = q.poll();
-            /* 判断是否到达终点 */
-            if (cur.left == null && cur.right == null) 
+```c++
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
+class Solution {
+public:
+    int minDepth(TreeNode* root) {
+        if(root==NULL)return 0;
+        deque<TreeNode*> q;
+        q.push_front(root);
+        int depth=1;
+        while(!q.empty())
+        {
+            int n=q.size();
+            for(int i=0;i<n;i++)
+            {
+                TreeNode* tmp=q.front();
+                q.pop_front();
+                if(tmp->left==NULL && tmp->right==NULL)
                 return depth;
-            /* 将 cur 的相邻节点加入队列 */
-            if (cur.left != null)
-                q.offer(cur.left);
-            if (cur.right != null) 
-                q.offer(cur.right);
+                if(tmp->left)q.push_back(tmp->left);
+                if(tmp->right)q.push_back(tmp->right);
+            }
+            depth++;
         }
-        /* 这里增加步数 */
-        depth++;
+        return depth;
+
     }
-    return depth;
-}
+};
 ```
+
+**双向bfs**
+
+[752.打开转盘锁（中等）](https://leetcode-cn.com/problems/open-the-lock)
+
+```c++
+class Solution {
+public:
+    string UP(string tmp,int j)
+    {
+        if(tmp[j]=='9')tmp[j]='0';
+        else tmp[j]+=1;
+        return tmp;
+    }
+    string DOWN(string tmp,int j)
+    {
+        if(tmp[j]=='0')tmp[j]='9';
+        else tmp[j]-=1;
+        return tmp;
+    }
+    int openLock(vector<string>& deadends, string target) {
+        set<string> q1;
+        set<string> q2;
+        set<string> d;
+        set<string> used;
+        for(auto s:deadends)d.insert(s);
+        q1.insert("0000");
+        q2.insert(target);
+        //used.insert("0000");
+        int step=0;
+        while(!q1.empty()&&!q2.empty())
+        {
+            set<string> temp;
+            for(auto cur:q1)
+            {
+                if(d.count(cur))continue;
+                if(q2.count(cur))return step;
+                used.insert(cur);
+                for(int i=0;i<4;i++)
+                {
+                    string tmp=UP(cur,i);
+                    if(!used.count(tmp))
+                    {
+                        temp.insert(tmp);
+                    }
+                    string tmp1 = DOWN(cur,i);
+                    if(!used.count(tmp1))
+                    temp.insert(tmp1);
+                }
+            }
+            step++;
+            q1=q2;
+            q2=temp;
+        }
+        return -1;
+    }
+};
+```
+
+如何转化bfs，以及矩阵换位的处理，如何转字符串处理；
+
+[773.滑动谜题（困难）](https://leetcode-cn.com/problems/sliding-puzzle)
+
+```c++
+class Solution {
+public:
+    int slidingPuzzle(vector<vector<int>>& board) {
+        int m=2,n=3;
+        string start="";
+        string end="123450";
+        for(int i=0;i<m;i++)
+        {
+            for(int j=0;j<n;j++)
+            {
+                start.push_back(board[i][j]+'0');
+            }
+        }
+        vector<vector<int>> neighbor = {
+        { 1, 3 },
+        { 0, 4, 2 },
+        { 1, 5 },
+        { 0, 4 },
+        { 3, 1, 5 },
+        { 4, 2 }
+        };
+
+        deque<string> q;
+        set<string> used;
+
+        q.push_back(start);
+        used.insert(start);
+        int step=0;
+        while(!q.empty())
+        {
+            int n=q.size();
+            for(int i=0;i<n;i++)
+            {
+                string tmp=q.front();
+                q.pop_front();
+                if(end==tmp)return step;
+                // used.insert(tmp);
+                int id=0;
+                while(tmp[id]!='0')id++;
+                for(int adj:neighbor[id])
+                {
+                    string newboard=tmp;
+                    swap(newboard[adj],newboard[id]);
+                    if(!used.count(newboard))
+                    {
+                        used.insert(newboard);
+                        q.push_back(newboard);
+                    }
+
+                }
+
+            }
+            step++;
+        }
+        return -1;
+    }
+};
+```
+
+
 
 ## 1.3并查集（真假判断，有逻辑传递性）
 
