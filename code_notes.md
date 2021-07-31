@@ -1371,9 +1371,96 @@ static bool cmp(vector<int>& a, vector<int>& b)
 };
 ```
 
+# 4.位操作
+
+## 4.1冷知识
+
+**利用异或操作** **`^`** **和空格进行英文字符大小写互换**
+
+```c++
+('d' ^ ' ') = 'D'
+('D' ^ ' ') = 'd'
+```
+
+**判断两个数是否异号**
+
+```c++
+int x = -1, y = 2;
+bool f = ((x ^ y) < 0); // true
+
+int x = 3, y = 2;
+bool f = ((x ^ y) < 0); // false
+```
+
+**不用临时变量交换两个数**
+
+```c++
+int a = 1, b = 2;
+a ^= b;
+b ^= a;
+a ^= b;
+// 现在 a = 2, b = 1
+```
+
+**加一减一**
+
+```c++
+int n = 1;
+n = -~n;
+// 现在 n = 2
+
+int n = 2;
+n = ~-n;
+// 现在 n = 1
+```
+
+## 4.2常用技巧
+
+### **4.2.1.消除数字 `n` 的二进制表示中的最后一个 1**
+
+n&(n-1)
+
+示范：
+
+#### 汉明权重
+
+```c++
+int hammingWeight(uint32_t n) {
+    int res = 0;
+    while (n != 0) {
+        n = n & (n - 1);
+        res++;
+    }
+    return res;
+}
+```
+
+#### 判断2的指数
+
+一个数如果是 2 的指数，那么它的二进制表示一定只含有一个 1：
+
+```c++
+bool isPowerOfTwo(int n) {
+    if (n <= 0) return false;
+    return (n & (n - 1)) == 0;
+}
+```
+
+### 4.2.2.查找只出现一次的元素
+
+```c++
+int singleNumber(vector<int>& nums) {
+    int res = 0;
+    for (int n : nums) {
+        res ^= n;
+    }
+    return res;
+}
+```
 
 
-# 3小技巧
+
+# 5.小技巧
 
 ### 二维偏序问题先升序后降序
 
@@ -1389,7 +1476,7 @@ static bool cmp(vector<int>& a, vector<int>& b)
 
 vector<vector<vector<int> > > vecInt(m, vector<vector<int> >(n, vector<int>(l)));
 
-## 3.1输入输出
+## 5.1输入输出
 
 ```c++
 //2 3 10
