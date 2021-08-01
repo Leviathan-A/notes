@@ -1458,6 +1458,247 @@ int singleNumber(vector<int>& nums) {
 }
 ```
 
+# 5.数学类常见技巧
+
+## 5.1 阶乘0位
+
+```c++
+int trailingZeroes(int n) {
+    int res = 0;
+    long divisor = 5;
+    while (divisor <= n) {
+        res += n / divisor;
+        divisor *= 5;
+    }
+    return res;
+}
+```
+
+
+
+# 5.2 找质数
+
+```java
+int countPrimes(int n) {
+    boolean[] isPrim = new boolean[n];
+    Arrays.fill(isPrim, true);
+    for (int i = 2; i * i < n; i++) 
+        if (isPrim[i]) 
+            for (int j = i * i; j < n; j += i) 
+                isPrim[j] = false;
+
+    int count = 0;
+    for (int i = 2; i < n; i++)
+        if (isPrim[i]) count++;
+
+    return count;
+}
+```
+
+## 5.3 高效进行模幂运算
+
+[372.超级次方（中等）](https://leetcode-cn.com/problems/super-pow)
+
+```c++
+int base = 1337;
+// 计算 a 的 k 次方然后与 base 求模的结果
+int mypow(int a, int k) {
+    // 对因子求模
+    a %= base;
+    int res = 1;
+    for (int _ = 0; _ < k; _++) {
+        // 这里有乘法，是潜在的溢出点
+        res *= a;
+        // 对乘法结果求模
+        res %= base;
+    }
+    return res;
+}
+
+int superPow(int a, vector<int>& b) {
+    if (b.empty()) return 1;
+    int last = b.back();
+    b.pop_back();
+
+    int part1 = mypow(a, last);
+    int part2 = mypow(superPow(a, b), 10);
+    // 每次乘法都要求模
+    return (part1 * part2) % base;
+}
+```
+
+高效乘方
+
+```c++
+int base = 1337;
+
+int mypow(int a, int k) {
+    if (k == 0) return 1;
+    a %= base;
+
+    if (k % 2 == 1) {
+        // k 是奇数
+        return (a * mypow(a, k - 1)) % base;
+    } else {
+        // k 是偶数
+        int sub = mypow(a, k / 2);
+        return (sub * sub) % base;
+    }
+}
+```
+
+## 5.4 缺失元素
+
+1.位图思想
+
+```c++
+class Solution {
+public:
+    vector<int> findDisappearedNumbers(vector<int>& nums) {
+        const int n = nums.size();
+        vector<int> ans;
+        bool flag[100001];
+        memset(flag, false, sizeof(flag)); 
+        for(int& num: nums)  //把有的数字都标记成true
+            flag[num] = true;
+        for(int i = 1; i <= n; ++i) //把没标记的加入答案
+            if(!flag[i])
+                ans.push_back(i);
+        return ans;
+    }
+};
+
+作者：MGA_Bronya
+链接：https://leetcode-cn.com/problems/find-all-numbers-disappeared-in-an-array/solution/448-zhao-dao-suo-you-shu-zu-zhong-xiao-s-pg4i/
+来源：力扣（LeetCode）
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+```
+
+2.求和相减
+
+## 5.5水塘抽样
+
+```c++
+int getRandom() {
+        int k = 2;
+        int res = head->val;
+        ListNode* curr = head->next;
+        while (curr != nullptr)
+        {
+            if (rand() % k == 0)
+            {
+                res = curr->val;
+            }
+            curr = curr->next;
+            ++k;
+        }
+
+        return res;
+    }
+
+作者：ffreturn
+链接：https://leetcode-cn.com/problems/linked-list-random-node/solution/382-cjian-dan-yi-dong-de-xu-shui-chi-jie-222u/
+来源：力扣（LeetCode）
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+```
+
+## 5.6 链表去重
+
+```c++
+ListNode deleteDuplicates(ListNode head) {
+    if (head == null) return null;
+    ListNode slow = head, fast = head;
+    while (fast != null) {
+        if (fast.val != slow.val) {
+            // nums[slow] = nums[fast];
+            slow.next = fast;
+            // slow++;
+            slow = slow.next;
+        }
+        // fast++
+        fast = fast.next;
+    }
+    // 断开与后面重复元素的连接
+    slow.next = null;
+    return head;
+}
+
+int removeElement(int[] nums, int val) {
+    int fast = 0, slow = 0;
+    while (fast < nums.length) {
+        if (nums[fast] != val) {
+            nums[slow] = nums[fast];
+            slow++;
+        }
+        fast++;
+    }
+    return slow;
+}
+```
+
+## 5.7 移动0和去重（双指针）
+
+```c++
+int removeElement(int[] nums, int val) {
+    int fast = 0, slow = 0;
+    while (fast < nums.length) {
+        if (nums[fast] != val) {
+            nums[slow] = nums[fast];
+            slow++;
+        }
+        fast++;
+    }
+    return slow;
+}
+```
+
+## 5.8 快速区间求和（前缀和）
+
+```c++
+class Solution {
+public:
+    int subarraySum(vector<int>& nums, int k) {
+        unordered_map<int,int> m;
+        m[0]=1;
+        int ans=0;
+        int sum=0;
+        for(int& n:nums)
+        {
+            sum+=n;
+            //if(sum>k)
+            if(m.count(sum-k))
+            ans+=m[sum-k];
+            m[sum]++;
+        }
+        return ans;
+    }
+};
+```
+
+## 5.9 区间快速加和（差分区间）
+
+```c++
+class Solution {
+public:
+    vector<int> corpFlightBookings(vector<vector<int>>& bookings, int n) {
+        vector<int> diff(n,0);
+        for(auto ve:bookings)
+        {
+            diff[ve[0]-1]+=ve[2];
+            if(ve[1]<diff.size())
+            diff[ve[1]]-=ve[2];
+        }
+        vector<int> ans(n,0);
+        ans[0]=diff[0];
+        for(int i=1;i<diff.size();i++)
+        {
+            ans[i]=diff[i]+ans[i-1];
+        }
+        return ans;
+    }
+};
+```
+
 
 
 # 5.小技巧
@@ -1539,6 +1780,18 @@ vector<vector<vector<int> > > vecInt(m, vector<vector<int> >(n, vector<int>(l)))
 ```
 
 ```c++
+//1,2,3:3
+	int pos = s.find_first_of(":");
+	string arrStr = s.substr(0, pos);
+	int k = atoi(s.substr(pos + 1).c_str());
+	vector<string> ans;
+	string line,token;
+	cin >> line;
+	stringstream ss(line);
+	while (getline(ss, token, ','))
+	{
+		ans.push_back(token);
+	}	
 //1,2,3
 //getline
 	vector<string> ans;
