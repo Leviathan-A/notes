@@ -1717,6 +1717,10 @@ public:
 
 vector<vector<vector<int> > > vecInt(m, vector<vector<int> >(n, vector<int>(l)));
 
+### 小顶堆声明
+
+priority_queue <int,vector<int>,greater<int> > q;
+
 ## 5.1输入输出
 
 ```c++
