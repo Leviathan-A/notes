@@ -1325,6 +1325,43 @@ int main()
 
 
 
+输入优化
+
+```c++
+#include<iostream>
+#include<vector>
+
+using namespace std;
+
+int main()
+{
+    int N,V;
+    cin>>N>>V;
+    int v,w;
+    vector<int> dp(V+1,0);
+    for(int i=0;i<N;i++)
+    {
+        cin>>v>>w;
+        for(int j=v;j<=V;j++)
+        dp[j]=max(dp[j],dp[j-v]+w);
+    }
+    cout<<dp[V];
+    return 0;
+}
+```
+
+
+
+### 3.多重背包
+
+[多重背包]: https://www.acwing.com/problem/content/4/
+
+```
+
+```
+
+
+
 ```java
 int[][] dp[N+1][W+1]
 dp[0][..] = 0
