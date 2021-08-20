@@ -1206,6 +1206,125 @@ for (int i = 0; i < n; i++) {
 
 ## 2.5背包问题
 
+[背包九讲]: https://www.bilibili.com/video/av33930433
+
+### 1.01背包
+
+[01背包]: https://www.acwing.com/problem/content/2/
+
+二维dp表
+
+| 0    | 0    | 0    | 0    | 0    |
+| ---- | ---- | ---- | ---- | ---- |
+| 0    | 2    | 2    | 2    | 2    |
+| 0    | 2    | 4    | 4    | 4    |
+| 0    | 2    | 6    | 6    | 6    |
+| 0    | 2    | 6    | 6    | 6    |
+| 0    | 2    | 6    | 8    | 8    |
+
+
+
+```c++
+#include<iostream>
+#include<vector>
+
+using namespace std;
+
+int main()
+{
+    int N,V;
+    cin>>N>>V;
+    vector<vector<int>> data(N,vector<int>(2));
+    for(int i=0;i<N;i++)
+    cin>>data[i][0]>>data[i][1];
+    
+    vector<vector<int>> dp(N+1,vector<int>(V+1,0));
+    
+    for(int i=1;i<=N;i++)
+    {
+        for(int j=1;j<=V;j++)
+        {
+            if(j-data[i-1][0]<0)
+            dp[i][j]=dp[i-1][j];
+            else
+            dp[i][j]=max(dp[i-1][j],dp[i-1][j-data[i-1][0]]+data[i-1][1]);
+        }
+    }
+    cout<<dp[N][V];
+    return 0;
+}
+```
+
+一维dp表
+
+| 0    | 2    | 2    | 2    | 2    |
+| ---- | ---- | ---- | ---- | ---- |
+| 0    |      | 4    | 6    | 6    |
+| 0    |      |      | 6    | 8    |
+| 0    |      |      |      | 8    |
+
+```c++
+#include<iostream>
+#include<vector>
+
+using namespace std;
+
+int main()
+{
+    int N,V;
+    cin>>N>>V;
+    vector<vector<int>> data(N,vector<int>(2));
+    for(int i=0;i<N;i++)
+    cin>>data[i][0]>>data[i][1];
+    
+    vector<int> dp(V+1,0);
+    
+    for(int i=1;i<=N;i++)
+    {
+        for(int j=V;j>=data[i-1][0];j--)
+            dp[j]=max(dp[j],dp[j-data[i-1][0]]+data[i-1][1]);
+    }
+    cout<<dp[V];
+    return 0;
+}
+```
+
+
+
+### 2.完全背包问题
+
+[完全背包]: https://www.acwing.com/problem/content/3/
+
+
+
+```c++
+#include<iostream>
+#include<vector>
+
+using namespace std;
+
+int main()
+{
+    int N,V;
+    cin>>N>>V;
+    vector<vector<int>> data(N,vector<int>(2));
+    for(int i=0;i<N;i++)
+    cin>>data[i][0]>>data[i][1];
+    
+    vector<int> dp(V+1,0);
+    
+    for(int i=1;i<=N;i++)
+    {
+        for(int j=data[i-1][0];j<=V;j++)
+            dp[j]=max(dp[j],dp[j-data[i-1][0]]+data[i-1][1]);
+    }
+    cout<<dp[V];
+    return 0;
+}
+```
+
+
+
 ```java
 int[][] dp[N+1][W+1]
 dp[0][..] = 0
@@ -1850,4 +1969,3 @@ priority_queue <int,vector<int>,greater<int> > q;
 原文链接：https://blog.csdn.net/qq_40602964/article/details/95252976
 ```
 
-### 
