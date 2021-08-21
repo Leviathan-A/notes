@@ -1352,7 +1352,7 @@ int main()
 
 
 
-### 3.多重背包
+### 3.多重背包1.0
 
 [多重背包]: https://www.acwing.com/problem/content/4/
 
@@ -1377,6 +1377,172 @@ int main()
         dp[j]=max(dp[j],dp[j-k*v]+k*w);
     }
     cout<<dp[V];
+    return 0;
+}
+```
+
+### 4.多重背包2.0(二进制优化)
+
+[多重背包2.0]: https://www.acwing.com/problem/content/5/
+
+```c++
+#include<iostream>
+#include<vector>
+
+using namespace std;
+
+int main()
+{
+    int N,V;
+    cin>>N>>V;
+    vector<pair<int,int>> goods;
+    for(int i=0;i<N;i++)
+    {
+        int v,w,s;
+        cin>>v>>w>>s;
+        for(int k=1;k<=s;k*=2)
+        {
+            s-=k;
+            goods.push_back({v*k,w*k});
+        }
+        if(s>0)goods.push_back({v*s,w*s});
+        
+        
+    }
+    vector<int>dp(V+1);
+    for(auto good:goods)
+    {
+        for(int j=V;j>=good.first;j--)
+        {
+            dp[j]=max(dp[j],dp[j-good.first]+good.second);
+        }
+    }
+    cout<<dp[V];
+    return 0;
+}
+```
+
+### 5.混合背包
+
+[混合背包]: https://www.acwing.com/problem/content/7/
+
+超时版本：转化为01+完全，01反向，完全正向
+
+```c++
+#include<iostream>
+#include<vector>
+
+using namespace std;
+
+struct good
+{
+    int kind;
+    int v,w;
+};
+int main()
+{
+    int N,V;
+    cin>>N>>V;
+    vector<good> data;
+    for(int i=0;i<N;i++)
+    {
+        int v,w,s;
+        cin>>v>>w>>s;
+        if(s==-1)data.push_back({-1,v,w});
+        else if(s==0)data.push_back({0,v,w});
+        else if(s>0)
+        for(int j=1;j<=s;j++)
+        data.push_back({-1,v*j,w*j});
+        
+        
+    }
+    vector<int> dp(V+1);
+    for(auto good:data)
+    {
+
+        if(good.kind==-1)
+        {
+            for(int j=V;j>=good.v;j--)
+            dp[j]=max(dp[j],dp[j-good.v]+good.w);
+        }
+        else if(good.kind==0)
+        {
+            for(int j=good.v;j<=V;j++)
+            dp[j]=max(dp[j],dp[j-good.v]+good.w);
+        }
+    }
+    cout<<dp[V];
+    return 0;
+}
+```
+
+正确答案：通过二进制优化，直接转化为01
+
+```c++
+#include<iostream>
+#include<vector>
+
+using namespace std;
+
+
+int main()
+{
+    int N,V;
+    cin>>N>>V;
+    vector<pair<int,int>> goods;
+    for(int i=0;i<N;i++)
+    {
+        int v,w,s;
+        cin>>v>>w>>s;
+        if(s==-1)s=1;
+        else if(s==0)s=V/v;
+        
+        for(int k=1;k<=s;k<<=2)
+        {
+            s-=k;
+            goods.push_back({v*k,w*k});
+        }
+        if(s>0)
+        {
+            goods.push_back({s*v,s*w});
+        }
+    }
+    vector<int> dp(V+1);
+    for(auto good:goods)
+    {
+        for(int j=V;j>=good.first;j--)
+        dp[j]=max(dp[j],dp[j-good.first]+good.second);
+    }
+    cout<<dp[V];
+    return 0;
+}
+```
+
+### 6.二维代价背包
+
+[二维代价背包]: https://www.acwing.com/problem/content/8/
+
+```c++
+#include<iostream>
+#include<vector>
+
+using namespace std;
+
+int main()
+{
+    int N,V,M;
+    cin>>N>>V>>M;
+    vector<vector<int>> dp(V+1,vector<int>(M+1,0));
+    for(int i=0;i<N;i++)
+    {
+        int v,m,w;
+        cin>>v>>m>>w;
+        for(int j=V;j>=v;j--)
+        for(int k=M;k>=m;k--)
+        dp[j][k]=max(dp[j][k],dp[j-v][k-m]+w);
+        
+    }
+    cout<<dp[V][M];
     return 0;
 }
 ```
