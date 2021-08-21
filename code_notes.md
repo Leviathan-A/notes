@@ -1356,8 +1356,29 @@ int main()
 
 [多重背包]: https://www.acwing.com/problem/content/4/
 
-```
+```c++
+#include<iostream>
+#include<vector>
 
+using namespace std;
+
+int main()
+{
+    int N,V;
+    cin>>N>>V;
+    vector<int> dp(V+1);
+    for(int i=0;i<N;i++)
+    {
+        int v,w,s;
+        cin>>v>>w>>s;
+        
+        for(int j=V;j>=0;j--)
+        for(int k=1;k<=s && k*v<=j;k++)
+        dp[j]=max(dp[j],dp[j-k*v]+k*w);
+    }
+    cout<<dp[V];
+    return 0;
+}
 ```
 
 
@@ -1468,27 +1489,23 @@ public:
 ![](./图片/区间重叠问题.jpg)
 
 ```java
-public int intervalSchedule(int[][] intvs) {
-    if (intvs.length == 0) return 0;
-    // 按 end 升序排序
-    Arrays.sort(intvs, new Comparator<int[]>() {
-        public int compare(int[] a, int[] b) {
-            return a[1] - b[1];
+class Solution {
+public:
+static bool cmp(vector<int>& a, vector<int>& b)
+{
+    return a[1]<b[1]?true:false; 
+}
+    int eraseOverlapIntervals(vector<vector<int>>& intervals) {
+        sort(intervals.begin(),intervals.end(),cmp);
+        int ans=0;
+        int tail=intervals[0][1];
+        for(int i=1;i<intervals.size();i++)
+        {
+            if(tail>intervals[i][0])ans++;
+            else tail=intervals[i][1];
         }
-    });
-    // 至少有一个区间不相交
-    int count = 1;
-    // 排序后，第一个区间就是 x
-    int x_end = intvs[0][1];
-    for (int[] interval : intvs) {
-        int start = interval[0];
-        if (start >= x_end) {
-            // 找到下一个选择的区间了
-            count++;
-            x_end = interval[1];
-        }
+        return ans;
     }
-    return count;
 }
 ```
 
