@@ -184,6 +184,76 @@ void backtrack(int[] nums, LinkedList<Integer> track) {
 
 通俗来说，我们应该尽量「少量多次」，就是说宁可多做几次选择，也不要给太大的选择空间；宁可「二选一」选 `k` 次，也不要 「`k` 选一」选一次。
 
+### 走格子示范（小红书笔试）
+
+```c++
+#include<iostream>
+#include<vector>
+#include<algorithm>
+#include<fstream>
+#include<string>
+#include<numeric>
+#include <sstream>
+#include <iomanip>
+#include<unordered_map>
+#include<set>
+
+using namespace std;
+vector<vector<int>>dir{ {0,1},{0,-1},{1,0},{-1,0} };
+int res = 0;
+void dfs(vector<string>& chess, int size, int i, int j) {
+	if (size - 1 == 0) {
+		if (i == chess.size() - 1) {
+			res++;
+		}
+		return;
+	}
+	for (int k = 0; k < 4; ++k) {
+		int ni = i + dir[k][0];
+		int nj = j + dir[k][1];
+		if (ni < 0 || ni >= chess.size() || nj < 0 || nj >= chess[0].size() || chess[ni][nj] != '.')continue;
+		chess[i][j] = '#';
+		size--;
+		dfs(chess, size, ni, nj);
+		size++;
+		chess[i][j] = '.';
+	}
+}
+
+/*
+3
+#.#
+..#
+...
+
+*/
+int main() {
+	int N;
+	cin >> N;
+	string str;
+	vector<string>vec;
+	for (int i = 0; i < N; ++i) {
+		cin >> str;
+		vec.push_back(str);
+	}
+	int size = 0;
+	for (int i = 0; i < vec.size(); ++i) {
+		for (int j = 0; j < vec[i].size(); ++j) {
+			if (vec[i][j] == '.')size++;
+		}
+	}
+	if (vec.size() == 0 || vec[0].size() == 0)return 0;
+	//if (vec[0][0] == '#')size;
+
+	dfs(vec, size, 0, 0);
+	cout << res << endl;
+	return 0;
+}
+
+```
+
+
+
 ## 1.2.5bfs框架
 
 ```java
@@ -1544,6 +1614,139 @@ int main()
     }
     cout<<dp[V][M];
     return 0;
+}
+```
+
+### 7.最优方案数
+
+[最优方案数]: https://www.acwing.com/problem/content/11/
+
+```c++
+#include<iostream>
+#include<vector>
+
+using namespace std;
+const int mod = 1e9 + 7;
+int main()
+{
+    int N,V;
+    cin>>N>>V;
+    
+    vector<int> dp(V+1,0);
+    vector<int> cnt(V+1,1);
+    
+    for(int i=0;i<N;i++)
+    {
+        int v,w;
+        cin>>v>>w;
+        for(int j=V;j>=v;j--)
+        {
+            int tmp=dp[j-v]+w;
+            if(tmp>dp[j])
+            {
+                cnt[j]=cnt[j-v];
+                dp[j]=tmp;
+            }
+            else if(tmp==dp[j])
+            {
+                dp[j]=dp[j-v]+w;
+                cnt[j]=(cnt[j]+cnt[j-v])%mod;
+            }
+        }
+    }
+    cout<<cnt[V];
+    return 0;
+}
+```
+
+### 8.最优方案
+
+[最优方案]: https://www.acwing.com/problem/content/12/
+
+```c++
+#include<iostream>
+#include<vector>
+
+using namespace std;
+
+int main()
+{
+    int N,V;
+    cin>>N>>V;
+    vector<int> v(N);
+    vector<int> w(N);
+    for(int i=0;i<N;i++)
+    {
+        cin>>v[i]>>w[i];
+    }
+    vector<vector<int>> dp(N+1,vector<int>(V+1,0));
+    for(int i=N;i>0;i--)
+    {
+        for(int j=1;j<=V;j++)
+        {
+            if(j<v[i-1])
+            dp[i][j]=dp[i-1][j];
+            else
+            dp[i][j]=max(dp[i-1][j],dp[i-1][j-v[i-1]]+w[i-1]);
+        }
+    }
+    vector<int> ans;
+    int cur_v=V;
+    for(int i=1;i<=N;i++)
+    {
+        if(i==N && cur_v>=v[i-1])
+        {
+            ans.push_back(i);
+            break;
+        }
+        if(cur_v<=0)break;
+        if(cur_v-v[i-1]>=0 && dp[i][cur_v]==dp[i+1][cur_v-v[i-1]]+w[i-1])
+        {
+            ans.push_back(i);
+            cur_v-=v[i-1];
+        }
+        
+    }
+    for(int n:ans)
+    cout<<n<<" ";
+
+    return 0;
+}
+```
+
+### 9.装入方案数
+
+```c++
+#include<iostream>
+#include<vector>
+#include<algorithm>
+#include<fstream>
+#include<string>
+#include<numeric>
+#include <sstream>
+#include <iomanip>
+#include<unordered_map>
+#include<set>
+
+using namespace std;
+int main()
+{
+	int x, m;
+	cin >> x >> m;
+
+	vector<int> v(m);
+	for (int i = 0; i < m; i++)cin >> v[i];
+	int res = 0;
+	vector<int> dp(x + 1,0);
+	dp[0] = 1;
+	//sort(v.begin(),v.end());
+	for (auto t : v)
+	{
+		for (int j = x; j >= t; j--)
+			dp[j] += dp[j - t];
+	}
+	cout << dp[x];
+	return 0;
 }
 ```
 
