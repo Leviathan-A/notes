@@ -2243,6 +2243,227 @@ public:
 
 
 
+# 6.排序
+
+## 6.1拓扑排序
+
+**见华为8.25笔试**
+
+统计入度，根据入度层层排序
+
+```c++
+#include<iostream>
+#include<vector>
+#include<algorithm>
+#include<fstream>
+#include<string>
+#include<numeric>
+#include <sstream>
+#include <iomanip>
+#include<unordered_map>
+#include<set>
+#include<queue>
+using namespace std;
+unordered_map<int, int> dep;
+6
+3,5 2
+5 3
+4 5
+1 2
+0 3
+-1 1
+    ans=16
+    
+3
+-1 1
+2 2
+1 3
+    ans=-1
+int main()
+{
+	int n;
+	string line;
+	string token;
+	getline(cin, line);
+	n = stoi(line);
+	vector<vector<int>> data;
+	vector<int> times;
+	for (int i = 0; i < n; i++)
+	{
+		vector<int> store;
+		int time;
+		string tmp1,tmp2;
+		getline(cin, line);
+		auto pos = line.find_first_of(" ");
+		tmp1 = line.substr(pos);
+		tmp2 = line.substr(0, pos);
+		time = stoi(tmp1);
+		times.push_back(time);
+		stringstream ss(tmp2);
+		while (getline(ss, token, ','))
+		{
+			store.push_back(stoi(token));
+		}
+		data.push_back(store);
+
+	}
+
+	vector<int> in(n);
+	vector<vector<int>> depend_table(n);
+
+	for (int i = 0; i < data.size(); ++i)
+	{
+		for (int j = 0; j < data[i].size(); ++j)
+		{
+			if (data[i][j] == -1)continue;
+			depend_table[data[i][j]].push_back(i);
+			in[i]++;
+		}
+	}
+
+	int finaltime = 0;
+	queue<int> zero_in;
+	for (int i = 0; i < in.size(); ++i)
+	{
+		if (in[i] == 0)zero_in.push(i);
+	}
+	vector<int> ans_order;
+	//int visit = 0;
+	while (!zero_in.empty())
+	{
+		//visit++;
+		int u = zero_in.front();
+		zero_in.pop();
+		//t += times[u];
+		ans_order.push_back(u);
+		for (auto c : depend_table[u])
+		{
+			in[c]--;
+			if (in[c] == 0)
+			{
+				zero_in.push(c);
+			}
+		}
+	}
+
+	if (ans_order.size() == n)
+	{
+		for (auto n : ans_order)
+			finaltime += times[n];
+		cout << finaltime << endl;
+	}
+	else cout << -1 << endl;
+	return 0;
+}
+```
+
+
+
+## 6.2快排
+
+```c++
+#include <iostream>
+#include <vector>
+#include<numeric>
+using namespace std;
+
+int partition(vector<int> &arr, int start, int end)
+{
+	if (start >= end)return start;
+	int pivot = arr[start];
+	int i = start; int j = end + 1;
+	while (1)
+	{
+		while (arr[++i] < pivot)if (i >= end)break;
+		while (arr[--j] > pivot)if (j <= start)break;
+		if (i >= j)break;
+		swap(arr[i], arr[j]);
+	}
+	swap(arr[j], arr[start]);
+	return j;
+}
+void mysort(vector<int> &arr, int start, int end)
+{
+	if (start >= end)return;
+	int p = partition(arr, start, end);
+	mysort(arr, 0, p - 1);
+	mysort(arr, p + 1, end);
+	return;
+
+}
+vector<int> MySort(vector<int>& arr)
+{
+	mysort(arr, 0, arr.size() - 1);
+	return arr;
+}
+int main()
+{
+	vector<int> test = { 5,2,3,1,4 };
+	auto ans = MySort(test);
+	for(int i:ans)
+	cout << i << endl;
+	return 0;
+}
+```
+
+
+
+## 6.3堆排序
+
+```c++
+#include<iostream>
+#include<vector>
+using namespace std;
+ 
+// 递归方式构建大根堆(len是arr的长度，index是第一个非叶子节点的下标)
+void adjust(vector<int> &arr, int len, int index)
+{
+    int left = 2*index + 1; // index的左子节点
+    int right = 2*index + 2;// index的右子节点
+ 
+    int maxIdx = index;
+    if(left<len && arr[left] > arr[maxIdx])     maxIdx = left;
+    if(right<len && arr[right] > arr[maxIdx])     maxIdx = right;
+ 
+    if(maxIdx != index)
+    {
+        swap(arr[maxIdx], arr[index]);
+        adjust(arr, len, maxIdx);
+    }
+ 
+}
+ 
+// 堆排序
+void heapSort(vector<int> &arr, int size)
+{
+    // 构建大根堆（从最后一个非叶子节点向上）
+    for(int i=size/2 - 1; i >= 0; i--)
+    {
+        adjust(arr, size, i);
+    }
+ 
+    // 调整大根堆
+    for(int i = size - 1; i >= 1; i--)
+    {
+        swap(arr[0], arr[i]);           // 将当前最大的放置到数组末尾
+        adjust(arr, i, 0);              // 将未完成排序的部分继续进行堆排序
+    }
+}
+ 
+int main()
+{
+    vector<int> arr = {8, 1, 14, 3, 21, 5, 7, 10};
+    heapSort(arr, arr.size());
+    for(int i=0;i<arr.size();i++)
+    {
+        cout<<arr[i]<<endl;
+    }
+    return 0;
+}
+```
+
+
+
 # 5.小技巧
 
 ### 二维偏序问题先升序后降序
