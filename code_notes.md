@@ -2484,6 +2484,10 @@ vector<vector<vector<int> > > vecInt(m, vector<vector<int> >(n, vector<int>(l)))
 
 priority_queue <int,vector<int>,greater<int> > q;
 
+### 自定义比较规则的有限队列
+
+![image-20210829201257222](图片\自定义比较规则)
+
 ## 5.1输入输出
 
 ```c++
