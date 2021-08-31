@@ -572,6 +572,125 @@ public:
 
 ```
 
+### 最简LRU（C语言）
+
+```c
+#define MAX 100
+
+int judge(int a[], int n, int x)//判断数组中是否已有x，若有返回其下标值，没有则返回-1
+
+{
+	int i;
+	for (i = 0; i<n;i++)
+		if (x == a[i])
+			return i;
+		return -1;
+}
+
+void init(int a[], int n)//初始化数组为-1
+
+{
+	int i;
+	for (i = 0; i<n;i++)
+		a[i] = -1;
+}
+
+void insert(int a[], int n, int x)//栈法插入(第一个元素出，后面元素前移，新元素从尾部入)
+
+{
+	int i;
+		for (i = 0; i<n;i++)
+			a[i] = a[i + 1];
+			a[n - 1] = x;
+}
+
+void move(int a[], int n, int i)//移动下标为i的元素到尾部
+
+{
+	int j;
+	int m = a[i];
+	for (j = i; j<n;j++)
+		a[j] = a[j + 1];
+		a[n - 1] = m;
+}
+
+void print(int a[], int n)//输出当前数组元素
+
+{
+	int i;
+
+	for (i = 0; i<n;i++)
+		if (a[i] != -1)
+			printf(" %d", a[i]);
+		printf("\n");
+
+}
+
+int main()
+
+{
+	int stack[MAX];
+	int top = -1;//模仿栈的定义
+	int n, x;
+	printf("请输入物理块数：\n");
+	scanf("%d", &n);
+	init(stack, n);//初始化数组
+	printf("请输入内存访问序列：\n");
+	//4 6 3 5 1 4 1 2 1 2 7
+	int ans = 0;
+	while (scanf("%d", &x))//自动读数
+	{
+		if (x == 7)break;
+		printf("访问页面%d:\n", x);
+		top++;//读数后top自动+1
+		if (top == 0)//若数组无元素
+		{
+			stack[top] = x;//插入一个元素
+			ans += 21;
+		}
+		else if (top < n)
+		{
+			if (judge(stack, n, x) == -1)//若数组中不存在待插入元素
+			{
+				stack[top] = x;//新元素从尾部插入
+				ans += 21;
+			}
+			else//若数组中存在待插入元素
+			{
+				move(stack, top, judge(stack, n, x));//移动下标为i的元素到尾部
+				ans += 15;
+				top--;//因为没有插入新元素，回滚top值
+			}
+		}
+		else//超过物理块数的元素
+		{
+			if (judge(stack, n, x) == -1)//若数组中不存在待插入元素
+			{
+				insert(stack, n, x);
+				ans += 21;
+				top--;//因为没有插入新元素，回滚top值
+			}
+			else//若数组中存在待插入元素
+			{
+				move(stack, n, judge(stack, n, x));//移动下标为i的元素到尾部
+				ans += 15;
+				top--;//因为没有插入新元素，回滚top值
+			}
+		}
+
+		print(stack, n);//读一个序列号，输出当前数组元素
+		cout << ans << endl;
+
+	}
+	cout << ans;
+	return 0;
+
+}
+
+```
+
+
+
 ### LFU
 
 ```c++
@@ -1878,6 +1997,112 @@ static bool cmp(vector<int>& a, vector<int>& b)
 }
 ```
 
+## 3.2.1.NC37 合并区间
+
+```c++
+class Solution {
+public:
+    static bool cmp(Interval &a,Interval &b)
+    {
+        if(a.start<b.start)return true;
+        else if(a.start==b.start)return a.end>b.end;
+        return false;
+    }
+    vector<Interval> merge(vector<Interval> &intervals) {
+        if(intervals.size()==0)return {};
+        sort(intervals.begin(),intervals.end(),cmp);
+        int tail;
+        int head;
+
+        vector<Interval> ans;
+        ans.push_back(intervals[0]);
+        for(int i=1;i<intervals.size();i++)
+        {
+            head=ans.back().start;
+            tail=ans.back().end;
+            if(tail>=intervals[i].end)
+            continue;
+            else if(tail>=intervals[i].start)
+            {
+                tail=intervals[i].end;
+                ans.pop_back();
+                ans.push_back({head,tail});
+            }
+            else if(tail<intervals[i].start)
+            {
+                ans.push_back(intervals[i]);
+            }
+        }
+        return ans;
+    }
+};
+```
+
+## 3.2.2求合并以后的时间
+
+```c++
+#include<iostream>
+#include<vector>
+#include<algorithm>
+#include<fstream>
+#include<string>
+#include<numeric>
+#include <sstream>
+#include <iomanip>
+#include<unordered_map>
+
+//4
+//10:00-10:30
+//10:30-11:00
+//11:00-11:30
+//10:00-10:29
+using namespace std;
+static bool cmp(pair<int, int>& a, pair<int, int>& b)
+{
+	if (a.first == b.first)return a.second > b.second;
+	else return a.second < b.second;
+}
+vector<pair<int,int>> trans(vector<string>& arr)
+{
+	vector<pair<int, int>> res;
+	for (auto s : arr)
+	{
+		int begintime = (s[0] - '0') * 600 + (s[1] - '0') * 60 + (s[3] - '0') * 10 + (s[4] - '0');
+		int endtime = (s[6] - '0') * 600 + (s[7] - '0') * 60 + (s[9] - '0') * 10 + (s[10] - '0');
+		res.push_back({ begintime,endtime });
+	}
+	return res;
+}
+int main()
+{
+	int N;
+	cin >> N;
+	vector<string> arr(N);
+	for(int i=0;i<N;i++)
+	cin >> arr[i];
+
+	auto time = trans(arr);
+	sort(time.begin(), time.end(), cmp);
+
+	int tail = time[0].second;
+	int ans = time[0].second - time[0].first;
+	for (int i=1;i<time.size();i++)
+	{
+		if (tail > time[i].first)continue;
+		else
+		{
+			ans += time[i].second - time[i].first;
+			tail = time[i].second;
+		}
+	}
+	cout << ans;
+
+	return 0;
+}
+```
+
+
+
 ## 3.2最简覆盖一个区间的办法
 
 ```c++
@@ -2522,7 +2747,7 @@ priority_queue <int,vector<int>,greater<int> > q;
 	for(int i=0;i<n;i++)
 	{
 		vector<int> tmp(m);
-		for(int i=0;i<m;i++)cin>>tmp[i]
+		for(int i=0;i<m;i++)cin>>tmp[i];
 		mat.push_back(tmp);
 
 	}
