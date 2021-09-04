@@ -2687,6 +2687,107 @@ int main()
 }
 ```
 
+## 6.4冒泡排序
+
+```c++
+//冒泡排序
+//平均时间复杂度:O(N^2)
+//最坏情况复杂度:O(N^2)
+//空间复杂度:O(1)
+//稳定排序
+void bubblesort(vector<int>& nums) {
+	bool flag = true;
+	for (int i = 0; i < nums.size() && flag == true; ++i) {
+		flag = false;
+		for (int j = 0; j < nums.size() - i - 1; ++j) {
+			if (nums[j] > nums[j + 1]) {
+				swap(nums[j], nums[j + 1]);
+				flag = true;
+			}
+		}
+	}
+}
+```
+
+## 6.5插入排序 希尔排序
+
+```c++
+//--插入排序  直接插入    希尔排序
+
+//直接插入排序
+//平均时间复杂度:O(N^2)
+//最坏情况复杂度:O(N^2)
+//最好情况复杂度:O(N)
+//空间复杂度:O(1)
+//最多需要n(n−1)/2次比较
+//最少需要n−1次比较
+//稳定排序
+void insertsort(vector<int>& nums) {
+	int n = nums.size();
+	for (int i = 1; i < n; ++i) {
+		int tmp = nums[i], j;
+		for (j = i - 1; j >= 0 &&  nums[j]>tmp; --j) {
+			nums[j + 1] = nums[j];
+		}
+		nums[j + 1] = tmp;
+	}
+}
+
+
+
+//希尔排序
+//最坏情况复杂度:O(N^2)
+//不稳定排序
+void shellsort(vector<int>& nums) {
+	int n = nums.size();
+	for (int d = n / 2; d > 0; d /= 2) {
+		for (int i = d; i < n; ++i) {
+			int tmp = nums[i], j;
+			for (j = i - d; j >= 0&&tmp<nums[j]; j -= d) {
+				nums[j + d] = nums[j];
+			}
+			nums[j + d] = tmp;
+		}
+	}
+}
+```
+
+## 6.6归并排序
+
+```c++
+//归并排序
+//平均时间复杂度：O(NlogN)
+//稳定排序
+void FenZhi(vector<int>& vec,vector<int>& test ,int start,int end) {
+	if (start >= end)return;
+	int mid = start + (end - start) / 2;
+	int i = start, j = mid + 1;
+	int p = start;
+	FenZhi(vec, test, start, mid);
+	FenZhi(vec, test, mid + 1, end);
+	while (i <= mid && j <= end && p <= end) {
+		if (vec[i] <= vec[j])test[p++] = vec[i++];
+		else test[p++] = vec[j++];
+	}
+	for (; i <= mid; ++i) {
+		test[p++] = vec[i];
+	}
+	for (; j <= end; ++j) {
+		test[p++] = vec[j];
+	}
+	for (int t = start; t <= end; ++t) {
+		vec[t] = test[t];
+	}
+
+}
+
+vector<int>& Merge(vector<int>& vec) {
+	vector<int>test(vec.size(), 0);
+	FenZhi(vec, test, 0, vec.size() - 1);
+	return vec;
+}
+```
+
 
 
 # 5.小技巧
