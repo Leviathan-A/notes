@@ -2788,6 +2788,118 @@ vector<int>& Merge(vector<int>& vec) {
 }
 ```
 
+# 7.图
+
+## 1.floyd
+
+```c++
+//3 2
+//1 1
+//2 1 2
+//1 2
+vector<vector<int>> res;
+vector<int> path;
+void showway(vector<vector<int>>& way, int start, int end)
+{
+	int k = way[start][end];
+	cout << start << " ";
+	while (k != end)
+	{
+		cout << k << " ";
+		k = way[k][end];
+	}
+	cout << end << endl;
+}
+void backtra(vector<int>& chess, int startindex)
+{
+	if (path.size() == 2)
+	{
+		res.push_back(path);
+		return;
+	}
+
+	for (int i = startindex; i < chess.size(); ++i)
+	{
+		path.push_back(chess[i]);
+		backtra(chess, i + 1);
+		path.pop_back();
+	}
+}
+vector<vector<int>> floyd(int n, vector<vector<int>>& res)
+{
+	vector<vector<int>> dp(n, vector<int>(n, INT_MAX / 2));
+	vector<vector<int>> way(n, vector<int>(n, INT_MAX / 2));
+	for (auto it : res)
+	{
+		dp[it[0]][it[1]] = 1;
+		dp[it[1]][it[0]] = 1;
+
+	}
+	for (int i = 0; i < way.size(); i++)
+		for (int j = 0; j < way.size(); j++)
+			way[i][j] = j;
+	for (int i = 0; i < n; ++i)dp[i][i] = 0;
+	for (int k = 0; k < n; ++k)
+	{
+		for (int i = 0; i < n; ++i)
+		{
+			for (int j = 0; j < n; ++j)
+			{
+				if (dp[i][k] + dp[k][j] < dp[i][j])
+				{
+					way[i][j] = way[i][k];
+					dp[i][j] = dp[i][k] + dp[k][j];
+				}
+			}
+		}
+	}
+	return dp;
+}
+int main()
+{
+	int n, m;
+	cin >> n >> m;
+	vector<vector<int>> data(n);
+	for (int i = 0; i < n; i++)
+	{
+		int num;
+		cin >> num;
+		for (int j = 0; j < num; j++)
+		{
+			int tmp;
+			cin >> tmp;
+			
+			data[i].push_back(tmp);
+		}
+	}
+
+	vector<vector<int>> chess(m);
+	for (int i = 0; i < data.size(); ++i)
+	{
+		for (int j = 0; j < data[i].size(); ++j)
+		{
+			chess[data[i][j] - 1].push_back(i);
+		}
+	}
+	for (int i = 0; i < chess.size(); i++)
+		backtra(chess[i], 0);
+
+	vector<vector<int>> dp = floyd(n, res);
+	for (int i = 0; i < dp.size(); ++i)
+	{
+		for (int j = 0; j < dp[i].size(); ++j)
+		{
+			if (dp[i][j] == INT_MAX / 2)
+				cout << -1 << " ";
+			else
+			cout << dp[i][j] << " ";
+		}
+		cout << endl;
+	}
+	return 0;
+}
+```
+
 
 
 # 5.小技巧
