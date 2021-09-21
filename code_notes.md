@@ -572,6 +572,103 @@ public:
 
 ```
 
+LRU2
+
+```c++
+class LRUCache {
+public:
+    struct DlinkedNode
+    {
+        int key;
+        int val;
+        DlinkedNode* prev;
+        DlinkedNode* next;
+        DlinkedNode(int _key,int _val):key(_key),val(_val),prev(NULL),next(NULL){}
+    };
+    unordered_map<int,DlinkedNode*> m;
+    DlinkedNode* head,*tail;
+    int size;
+    int cap;
+    LRUCache(int capacity) {
+        head=new DlinkedNode(-1,-1);
+        tail=new DlinkedNode(-1,-1);
+        head->next=tail;
+        tail->prev=head;
+        cap=capacity;
+        size=0;
+    }
+    
+    int get(int key) {
+        if(!m.count(key))return -1;
+        DlinkedNode* tmp=m[key];
+        movetohead(tmp);
+        return tmp->val;
+    }
+    void addtohead(DlinkedNode* node) {
+        node->prev = head;
+        node->next = head->next;
+        head->next->prev = node;
+        head->next = node;
+    }
+    
+    void removenode(DlinkedNode* node) {
+        node->prev->next = node->next;
+        node->next->prev = node->prev;
+    }
+
+    void movetohead(DlinkedNode* node) {
+        removenode(node);
+        addtohead(node);
+    }
+
+    DlinkedNode* removetail() {
+        DlinkedNode* node = tail->prev;
+        removenode(node);
+        return node;
+    }
+    void put(int key, int value) {
+        if(size<cap)
+        {
+            if(m.count(key))
+            {
+                auto tmp=m[key];
+                tmp->val=value;
+                movetohead(tmp);
+            }
+            else
+            {
+                auto tmp=new DlinkedNode(key,value);
+                m[key]=tmp;
+                size++;
+                addtohead(tmp);
+            }
+        }
+        else
+        {
+            if(m.count(key))
+            {
+                auto tmp=m[key];
+                tmp->val=value;
+                movetohead(tmp);
+            }
+            else
+            {
+                auto tmp=new DlinkedNode(key,value);
+                m[key]=tmp;
+                addtohead(tmp);
+                auto tt=removetail();
+                m.erase(tt->key);
+                delete tt;
+                //size--;
+            }
+        }
+
+    }
+};
+```
+
+
+
 ### 最简LRU（C语言）
 
 ```c
@@ -2900,13 +2997,88 @@ int main()
 }
 ```
 
+2.kruskal
+
+```c++
+
+#include<stdio.h>
+#include<string.h>
+#include<algorithm>
+using namespace std;
+ 
+const int N=5000;
+ 
+struct node//存储每一条边
+{
+    int from;
+    int to;
+    int w;
+}a[N*10];
+ 
+bool cmp(node aa,node bb)//排序
+{
+    return aa.w>bb.w;//注意，和最小生成树的排序不同
+}
+ 
+int n,m,k,t;
+int f[N];//存储每一个点的父亲节点
+ 
+int getf(int v)//寻找父亲节点；
+{
+    if(f[v]==v)
+        return f[v];
+    else
+        return f[v]=getf(f[v]);
+}
+ 
+int Kruskal()
+{
+    sort(a,a+k,cmp);//按照边的权值由大到小进行排序；
+    int ans=0,countt=1;
+    for(int i=0;i<k;i++)
+    {
+        int t1=getf(a[i].from);
+        int t2=getf(a[i].to);
+        if(t1!=t2)//父亲节点不同，不会构成环路；
+        {
+            ans+=a[i].w;
+            f[t2]=t1;//把父亲节点改成相同；
+            countt++;
+            if(countt==n)//如果加入n条边就可以结束了；
+                break;
+        }
+    }
+    if(countt==n)
+        return ans;
+    else
+        return -1;
+}
+ 
+int main()
+{
+        scanf("%d%d",&n,&k);
+        for(int i=0;i<k;i++)
+        {
+            scanf("%d%d%d",&a[i].from,&a[i].to,&a[i].w);
+        }
+        for(int i=0;i<=N;i++)//初始化，自己的父亲节点是自己；
+            f[i]=i;
+        int kk=Kruskal();
+        printf("%d\n",kk);
+    return 0;
+}
+————————————————
+版权声明：本文为CSDN博主「titi2018815」的原创文章，遵循CC 4.0 BY-SA版权协议，转载请附上原文出处链接及本声明。
+原文链接：https://blog.csdn.net/titi2018815/article/details/100636584
+```
+
 
 
 # 5.小技巧
 
 ### 二维偏序问题先升序后降序
 
-### stl找最大max——element
+### stl找最大max_element
 
 ### stl求和accumulate(vec.begin() , vec.end() , 42);
 
